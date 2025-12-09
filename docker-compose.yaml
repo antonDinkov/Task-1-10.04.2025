@@ -1,0 +1,37 @@
+services:
+  mongo:
+    networks:
+      - my-network
+    container_name: mongodb
+    volumes:
+      - data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    image: mongo
+  backend:
+    ports:
+      - 80:80
+    container_name: backend
+    volumes:
+      - logs:/app/logs
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    networks:
+      - my-network
+    image: antondinkov/backend
+  frontend:
+    ports:
+      - 3000:3000
+    container_name: frontend
+    volumes:
+      - ./frontend/src:/app/src
+    networks:
+      - my-network
+    image: antondinkov/frontend
+networks:
+  my-network:
+volumes:
+  data:
+  logs:
